@@ -241,6 +241,12 @@ Set up the configuration template on the target or clinet machine.  Review and a
 db2mt init
 ```
 
+Catalog the node and target database.
+```
+db2mt configure -n
+db2mt configure -t
+```
+
 Configure the instance.
 ```
 db2mt configure
