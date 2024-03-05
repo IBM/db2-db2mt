@@ -1,2 +1,7 @@
+March 4, 2024
+v1.1.0 - New flags in db2mt catalog command to catalog target node (-n) and target databases (-t)
+       - Add support for db2mt restore and rollforward
+       - Bug fixes
+
 Feb 2, 2024
 v1.0.0 - Initial Release
