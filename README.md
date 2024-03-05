@@ -1,12 +1,7 @@
 # Db2 Migration Tooling
-The Db2 Migration Tooling (Db2MT) can be used to migrate Db2 Workloads to RDS for Db2. Db2MT
-eases the migration of existing workload from other EC2 or on prem systems by guiding the 
-migration process and also by having key optimizations to speed things up. Db2MT also allows
-for transparency and customization during the migration process as well through the customization of the generated scripts.
+The Db2 Migration Tooling (Db2MT) can be used to migrate Db2 Workloads to RDS for Db2. Db2MT eases the migration of existing workload from other EC2 or on prem systems by guiding the migration process and also by having key optimizations to speed things up. Db2MT also allows for transparency and customization during the migration process as well through the customization of the generated scripts.
 
-
-
-# Prerequisites
+## Prerequisites
 ### AIX
 Ensure AIX Toolbox for Open Source Software is installed
 https://www.ibm.com/support/pages/node/882892
@@ -34,7 +29,7 @@ Please also ensure that /bin/bash is available on the system.
 Ensure that jq, sed, and /bin/bash are available on the system.  Most Linux systems should already have these installed.
 
 
-# Commands
+## Commands
 You can find more details for each command below with `--help`.
 
 ### db2mt init
@@ -57,6 +52,19 @@ If you would like db2mt to create an s3 bucket for you, please provide `admawsAc
 
 Otherwise, if you already have an existing bucket or if you are on AIX, please create a bucket first and provide `s3awsAccessKey`, `s3awsSecretKey`, `s3Region`, `bucketName` instead in `init.yaml`.
 
+```
+./db2mt configure --help
+The configure subcommand will configure required components for db2mt that will be used in the migration
+
+Usage:
+  db2mt configure [flags]
+
+Flags:
+  -h, --help   help for configure
+  -n, --n      Catalog the target node and rdsadmin db
+  -t, --t      Catalog the target database
+```
+
 ### db2mt compatibility
 The tool supports both offline and online backups.  Use `db2mt compatibility backup` and `db2mt compatibility backup-online` commands to check if the source system is able to migrate using backups. 
 
@@ -76,11 +84,17 @@ Usage:
 Options:
     backup           Generate backup scripts for full offline backup
     backup-online    Generate backup scripts for full online backup
+    restore          Generate restore scripts for full offline/online backup
+    rollforward      Generate rollforward scripts for full online backup
     db2look          Generate db2look scripts that will be used to recreate the database
     export           Generate export scripts that will be used to recreate the database
     setupdb          Generate setupdb scripts that will be used to set up the database (e.g. storage groups, tablespaces, bufferpools, tables) on the target system
     load             Generate load scripts that will be used to populate the tables
     finalize         Generate finalize scripts that will be used to create the remaining database artifacts
+
+Flags:
+  -f, --f       Applicable to restore only: Generate restore scripts for full offline backup
+  -n, --n       Applicable to restore only: Generate restore scripts for full online backup
 
 ```
 
@@ -98,6 +112,8 @@ Usage:
 Options:
     backup             Run backup scripts for full offline backup
     backup-online      Run backup scripts for full online backup
+    restore            Run restore scripts for full offline/online backup
+    rollforward        Run rollforward scripts for full online backup
     export             Run export scripts to extract data from tables
     setupdb            Run setupdb scripts to set up the database (e.g. storage groups, tablespaces, bufferpools, tables) on the target system
     load               Run load scripts to ingest data into tables
@@ -118,8 +134,11 @@ Usage:
    db2mt upload [option]
 Options:
    backup          Upload backup image to S3
-   archive         Upload archive logs that needed for rollforward to S3
+   archive         Upload archive logs to S3 that are need for rollforward
    export          Upload db2look and export related files to S3
+
+Flags:
+  -c, --c       Applicable to archive only: Upload archive logs to S3 and complete rollforward
 
 ```
 
@@ -366,13 +385,28 @@ For online backup, you may also upload archive logs to S3
 ```
 db2mt upload archive
 ```
+To upload archive to s3 and complete the rollforward
+```
+db2mt upload archive -c
+```
 
-### Restore database
-If the target database is on RDS, follow the Db2 RDS procedure to restore and rollforward the database images.
+### Restore database on RDS
+If the target database is on RDS, you may use the following command to run restore.
 
-# Support
-If you are having issues, or have feature requests for the tooling you can open up an issue at https://github.com/IBM/db2-db2mt/issues
+For restoring an offline backup
+```
+db2mt generate restore -f
+db2mt run restore
+```
 
-# Download
-You can download binary images for each platform here https://github.com/IBM/db2-db2mt/releases
+For restoring an online backup
+```
+db2mt generate restore -n
+db2mt run restore
+```
 
+### Rollforward logs for online backup on RDS
+```
+db2mt generate rollforward
+db2mt run rollforward
+```
