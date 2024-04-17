@@ -207,7 +207,7 @@ Extract DDL defition.  Review the files generated and make any modifications if 
 
 Note: Default bufferpools and default tablespaces created by Db2 will be excluded in the DDLs
 ```
-db2mt generate dblook
+db2mt generate db2look
 ```
 
 Start db2 export on the source database.
