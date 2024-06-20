@@ -1,3 +1,8 @@
+Jun 20, 2024
+v1.1.2 - Bug fix for online backup
+       - Shorten rollforward check from every 5 minutes to every 30 seconds
+       - Rename db2mt-linuxppc-latest.tar.gz to db2mt-linuxppc64le-latest.tar.gz
+
 April 23, 2024
 v1.1.1 - Bug fix for table name identification
        - Copyright disclaimer
