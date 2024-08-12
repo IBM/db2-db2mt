@@ -1,3 +1,6 @@
+Aug 12, 2024
+v1.1.3 - Bug fix for statistics profile extraction
+
 Jun 20, 2024
 v1.1.2 - Bug fix for online backup
        - Shorten rollforward check from every 5 minutes to every 30 seconds
